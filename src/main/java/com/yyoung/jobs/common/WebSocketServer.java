@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@ServerEndpoint("/imServer/{id}")
-@Component
+
 @Slf4j
 public class WebSocketServer {
 

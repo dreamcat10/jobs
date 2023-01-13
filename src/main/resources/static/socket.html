@@ -15,7 +15,7 @@
             //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
             //等同于socket = new WebSocket("ws://localhost:8888/xxxx/im/25");
             //var socketUrl="${request.contextPath}/im/"+$("#userId").val();
-            var socketUrl="http://localhost:8080/imServer/"+$("#userId").val();
+            var socketUrl="http://localhost:8081/imServer/"+$("#userId").val() ;
             socketUrl=socketUrl.replace("https","ws").replace("http","ws");
             console.log(socketUrl);
             if(socket!=null){
@@ -26,6 +26,7 @@
             //打开事件
             socket.onopen = function() {
                 console.log("websocket已打开");
+                socket.send("接收消息");
                 //socket.send("这是来自客户端的消息" + location.href + new Date());
             };
             //获得消息事件
