@@ -11,20 +11,15 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.stream.Collectors;
 
 @SpringBootTest
 class JobsApplicationTests {
 
-    @Resource
-    RedisTemplate redisTemplate;
-
     @Test
     void contextLoads() {
-        ValueOperations value = redisTemplate.opsForValue();
-        value.set("ha", "hi");
-        System.out.println(value.get("ha"));
-
 
     }
 
