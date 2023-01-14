@@ -47,8 +47,9 @@ public class MyServerInboundHandler extends SimpleChannelInboundHandler<TextWebS
         JSONObject json = JSON.parseObject(text);
         Long toId =Long.valueOf((String) json.get("toId")) ;
         String contentText = (String) json.get("contentText");
+        Long roomId = Long.valueOf((String) json.get("roomId"));
 
-        webSocketHandler.sendMsg(toId, contentText);
+        webSocketHandler.sendMsg(toId, contentText, roomId);
         ctx.channel().writeAndFlush(new TextWebSocketFrame("服务器已收到消息"));
     }
 
