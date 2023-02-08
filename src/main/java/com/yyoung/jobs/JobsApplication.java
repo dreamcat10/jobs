@@ -18,8 +18,8 @@ public class JobsApplication {
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(JobsApplication.class, args);
 
-        NettyServer nettyServer = applicationContext.getBean(NettyServer.class);
-        nettyServer.run();
+//        NettyServer nettyServer = applicationContext.getBean(NettyServer.class);
+//        nettyServer.run();
     }
 
 }

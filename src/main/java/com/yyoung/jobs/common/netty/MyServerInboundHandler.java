@@ -2,6 +2,7 @@ package com.yyoung.jobs.common.netty;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.yyoung.jobs.entity.ChatLog;
 import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -50,7 +51,9 @@ public class MyServerInboundHandler extends SimpleChannelInboundHandler<TextWebS
         Long roomId = Long.valueOf((String) json.get("roomId"));
 
         webSocketHandler.sendMsg(toId, contentText, roomId);
-        ctx.channel().writeAndFlush(new TextWebSocketFrame("服务器已收到消息"));
+        ChatLog chatLog = new ChatLog();
+        String logMsg = webSocketHandler.handleLog(chatLog, toId, contentText, roomId);
+        ctx.channel().writeAndFlush(new TextWebSocketFrame(logMsg));
     }
 
 }

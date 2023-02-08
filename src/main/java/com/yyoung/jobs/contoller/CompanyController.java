@@ -24,7 +24,6 @@ public class CompanyController {
     public Result<Company> get(@PathVariable long id){
 
         Company company = companyService.getById(id);
-
         return Result.success(company);
     }
 }

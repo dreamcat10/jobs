@@ -1,5 +1,6 @@
 package com.yyoung.jobs.common.netty;
 
+import com.alibaba.fastjson.JSON;
 import com.yyoung.jobs.entity.ChatLog;
 import com.yyoung.jobs.service.ChatLogService;
 import com.yyoung.jobs.utils.SpringUtil;
@@ -61,16 +62,11 @@ public class WebSocketHandler {
     }
 
     public void sendMsg(Long toId, String msg, Long roomId){
-        msg = "{\"fromId\":" +id+ ",\"toId\":" +toId+ ",\"contentText\":" +msg+ "}";
         ChatLog chatLog = new ChatLog();
-        chatLog.setChatRoomId(roomId);
-        chatLog.setFromId(id);
-        chatLog.setToId(toId);
-        chatLog.setContext(msg);
-
+        String logMsg = handleLog(chatLog,toId, msg, roomId);
         if (websocketMap.containsKey(toId)){
             NioSocketChannel ch = (NioSocketChannel) websocketMap.get(toId);
-            ch.writeAndFlush(new TextWebSocketFrame(msg));
+            ch.writeAndFlush(new TextWebSocketFrame(logMsg));
             chatLog.setState(1);
             log.info("成功发送消息给id为:{}的用户",toId);
         }else {
@@ -79,10 +75,10 @@ public class WebSocketHandler {
             chatLog.setState(0);
             if (msgMap.containsKey(toId)){
                 ArrayList<String> list = (ArrayList<String>) msgMap.get(toId);
-                list.add(msg);
+                list.add(logMsg);
             }else {
                 ArrayList<String> list = new ArrayList<>();
-                list.add(msg);
+                list.add(logMsg);
                 msgMap.put(toId, list);
             }
             redisTemplate.opsForValue().set(toId+"",msgMap.get(toId));
@@ -92,6 +88,16 @@ public class WebSocketHandler {
     }
 
 
+    public String handleLog(ChatLog chatLog,Long toId, String msg, Long roomId){
+        chatLog.setChatRoomId(roomId);
+        chatLog.setFromId(id);
+        chatLog.setToId(toId);
+        chatLog.setContext(msg);
+        String logMsg = JSON.toJSONString(chatLog);
+
+        return logMsg;
+    }
+    //接收离线时别人发送的消息
     public void receive(){
         if (websocketMap.containsKey(id)){
             Channel ch = websocketMap.get(id);
@@ -102,10 +108,11 @@ public class WebSocketHandler {
                     ch.write(new TextWebSocketFrame(s));
                 }
                 ch.flush();
+                chatLogService.receive(id);
             }
             redisTemplate.delete(id+"");
             msgMap.remove(id);
-            chatLogService.receive(id);
+
         }
     }
 

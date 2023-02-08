@@ -7,8 +7,13 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ChatRoomDto extends ChatRoom {
+public class ChatRoomDto {
 
-    private List<ChatLog> chatLog;
+    private Long id;
+    private Long mine;
+    private Long other;
+    private String oAvatar;
+    private String oName;
+    private Long creatId;
 
 }

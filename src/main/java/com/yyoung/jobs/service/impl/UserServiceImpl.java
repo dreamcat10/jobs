@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yyoung.jobs.dto.TermDto;
 import com.yyoung.jobs.entity.Post;
 import com.yyoung.jobs.entity.User;
 import com.yyoung.jobs.mapper.UserMapper;
@@ -12,6 +13,7 @@ import com.yyoung.jobs.service.PostService;
 import com.yyoung.jobs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -36,7 +38,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Page<User> pageUser(long current, HttpServletRequest request, LambdaQueryWrapper<User> lambdaQueryWrapper) {
+    public Page<User> pageUser(HttpServletRequest request, LambdaQueryWrapper<User> lambdaQueryWrapper, Page<User> page) {
         long phone = (long) request.getSession().getAttribute("emp");
 
         Long empId = employeeService.getOne(phone).getId();
@@ -49,7 +51,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return postName;
         }).collect(Collectors.toList());
 
-        Page<User> page = new Page<>(current, 2);
         lambdaQueryWrapper.in(User::getIntendedPost, names);
 
         userMapper.selectPage(page, lambdaQueryWrapper);
@@ -57,12 +58,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Page<User> pageUser(long current, LambdaQueryWrapper<User> lambdaQueryWrapper) {
-        Page<User> page = new Page<>(current, 2);
+    public Page<User> pageUser( LambdaQueryWrapper<User> lambdaQueryWrapper,Page<User> page) {
 
         userMapper.selectPage(page, lambdaQueryWrapper);
 
         return page;
+    }
+
+    //筛选前端传来的有效条件
+    @Override
+    public LambdaQueryWrapper<User> screenTerms(LambdaQueryWrapper<User> queryWrapper, TermDto termDto) {
+        if (StringUtils.hasLength(termDto.getDegree())){
+            if (termDto.getDegree().equals("高中及以下")){
+                queryWrapper.in(User::getDegree, "高中","初中");
+            }else
+            queryWrapper.eq(User::getDegree, termDto.getDegree());
+        }
+        if (StringUtils.hasLength(termDto.getAddr())){
+            queryWrapper.like(User::getAddress, termDto.getAddr());
+        }
+        if (StringUtils.hasLength(termDto.getPost())){
+            queryWrapper.eq(User::getIntendedPost, termDto.getPost());
+        }
+        if (termDto.getTime()){
+            queryWrapper.orderByDesc(User::getLoggingTime);
+        }
+
+        return queryWrapper;
     }
 
 

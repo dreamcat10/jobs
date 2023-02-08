@@ -60,10 +60,12 @@ public class EmployeeController {
     //用户登录
     @PostMapping("/logging")
     public Result<Employee> logging(@RequestBody EmployeeDto employeeDto, HttpServletRequest request){
+        log.info("empDto:{}", employeeDto);
         Employee emp = employeeService.getOne(employeeDto.getPhone());
         if (emp == null)
             return Result.error("用户不存在!");
         Integer code = employeeDto.getCode();
+        log.info("code:{}",code);
         if (code !=null){
             ValueOperations ops = redisTemplate.opsForValue();
             Object sms = ops.get("" + employeeDto.getPhone());
@@ -76,7 +78,7 @@ public class EmployeeController {
             }
         }
 
-        if (!emp.getPassword().equals(employeeDto.getPassword())){
+        if (emp.getPassword() == null || !emp.getPassword().equals(employeeDto.getPassword())){
             return Result.error("账号或密码错误!");
         }
         request.getSession().setAttribute("emp", emp.getPhone());
@@ -85,8 +87,8 @@ public class EmployeeController {
     }
 
     //发送验证码
-    @RequestMapping("/sendMsg")
-    public Result<String> sendMsg(long phone){
+    @RequestMapping("/sendMsg/{phone}")
+    public Result<String> sendMsg(@PathVariable long phone){
         log.info("phone:{}",phone);
         String phoneNumbers = String.valueOf(phone);
         Integer code = ValidateCodeUtils.generateValidateCode(4);
