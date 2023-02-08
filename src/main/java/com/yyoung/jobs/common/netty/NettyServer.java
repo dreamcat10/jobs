@@ -16,7 +16,7 @@ public class NettyServer {
     @Autowired
     MyChannelInitializer myChannelInitializer;
 
-    private static int port = 8081;
+    private static int port = 8848;
     private static EventLoopGroup boos = new NioEventLoopGroup();
     private static EventLoopGroup works = new NioEventLoopGroup();
     private static ServerBootstrap bootstrap = new ServerBootstrap();
