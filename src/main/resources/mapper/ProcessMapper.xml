@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yyoung.jobs.mapper.ProcessMapper">
+    <!--int insertUser();-->
+    <select id="getProcess" resultMap="processDto" parameterType="long">
+        select p.id,p.user_id,p.emp_id,p.post_id,p.connect,p.resume,
+               p.interview,p.employment,p.create_time,p.update_time,
+               u.name as userName,u.avatar as userAvatar,s.name as postName
+        from process as p
+        join user as u
+        on u.id = p.user_id
+        join post as s
+        on s.id = p.post_id
+        where p.emp_id = #{id}
+    </select>
+
+    <resultMap id="processDto" type="com.yyoung.jobs.dto.ProcessDto">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="empId" column="emp_id"/>
+        <result property="postId" column="post_id"/>
+        <result property="connect" column="connect"/>
+        <result property="resume" column="resume"/>
+        <result property="interview" column="interview"/>
+        <result property="employment" column="employment"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="userName" column="userName"/>
+        <result property="userAvatar" column="userAvatar"/>
+        <result property="postName" column="postName"/>
+    </resultMap>
+</mapper>
