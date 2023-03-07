@@ -13,8 +13,11 @@ public class Room {
 
   private Long id;
   private Long createId;
+  private String createName;
+  private String createAvatar;
   private Long floorId;
   private Long replyId;
+  private String replyName;
   private String content;
   @TableField(fill = FieldFill.INSERT)
   private LocalDateTime createTime;

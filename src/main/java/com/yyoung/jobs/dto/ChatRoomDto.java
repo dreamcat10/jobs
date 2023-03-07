@@ -10,8 +10,8 @@ import java.util.List;
 public class ChatRoomDto {
 
     private Long id;
-    private Long mine;
-    private Long other;
+    private Long mineId;
+    private Long otherId;
     private String oAvatar;
     private String oName;
     private Long creatId;

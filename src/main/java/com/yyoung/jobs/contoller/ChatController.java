@@ -5,10 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yyoung.jobs.dto.ChatRoomDto;
 import com.yyoung.jobs.dto.PageDto;
-import com.yyoung.jobs.entity.ChatLog;
-import com.yyoung.jobs.entity.ChatRoom;
-import com.yyoung.jobs.entity.Employee;
-import com.yyoung.jobs.entity.User;
+import com.yyoung.jobs.entity.*;
+import com.yyoung.jobs.entity.Process;
 import com.yyoung.jobs.service.*;
 import com.yyoung.jobs.utils.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,8 @@ import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -35,15 +35,47 @@ public class ChatController {
     @Autowired
     CommonService commonService;
 
+    @Autowired
+    PostService postService;
+
+    @Autowired
+    ProcessService processService;
+
     @Value("${page.size}")
     Long size;
 
     @PostMapping("/room/{fromId}/{toId}")
     public Result<String> createRoom(@PathVariable("fromId") Long fromId,@PathVariable("toId") Long toId){
         ChatRoom chatRoom = new ChatRoom();
-        chatRoom.setUser1(fromId);
-        chatRoom.setUser2(toId);
+        chatRoom.setUser1Id(fromId);
+        chatRoom.setUser2Id(toId);
         chatRoom.setCreatId(fromId);
+
+        LambdaQueryWrapper<ChatRoom> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(ChatRoom::getUser1Id, fromId,toId);
+        queryWrapper.in(ChatRoom::getUser2Id, fromId,toId);
+
+        ChatRoom one = chatRoomService.getOne(queryWrapper);
+        if (one != null){
+            return Result.success("聊天室已存在");
+        }
+
+        Process process = new Process();
+        Object u1 = commonService.getOne(fromId);
+        if (u1 instanceof User){
+            process.setUserId(fromId);
+            process.setEmpId(toId);
+        }else {
+            process.setUserId(toId);
+            process.setEmpId(fromId);
+        }
+        process.setConnect(1);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("emp_id", process.getEmpId());
+        List<Post> posts = postService.listByMap(map);
+        process.setPostId(posts.get(0).getId());
+
+        processService.save(process);
 
         chatRoomService.save(chatRoom);
         return Result.success("成功创建聊天室");
@@ -58,9 +90,9 @@ public class ChatController {
     public Result<List<ChatRoomDto>> chatRooms(@PathVariable Long id){
 
         LambdaQueryWrapper<ChatRoom> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ChatRoom::getUser1, id);
+        queryWrapper.eq(ChatRoom::getUser1Id, id);
         queryWrapper.or();
-        queryWrapper.eq(ChatRoom::getUser2, id);
+        queryWrapper.eq(ChatRoom::getUser2Id, id);
 
         List<ChatRoom> chatRooms = chatRoomService.list(queryWrapper);
 
@@ -68,10 +100,10 @@ public class ChatController {
         for (ChatRoom chatRoom : chatRooms) {
             ChatRoomDto chatRoomDto = new ChatRoomDto();
             chatRoomDto.setId(chatRoom.getId());
-            chatRoomDto.setMine(id);
-            chatRoomDto.setOther(id.equals(chatRoom.getUser1()) ? chatRoom.getUser2() : chatRoom.getUser1());
+            chatRoomDto.setMineId(id);
+            chatRoomDto.setOtherId(id.equals(chatRoom.getUser1Id()) ? chatRoom.getUser2Id() : chatRoom.getUser1Id());
             chatRoomDto.setCreatId(chatRoom.getCreatId());
-            Object other = commonService.getOne(chatRoomDto.getOther());
+            Object other = commonService.getOne(chatRoomDto.getOtherId());
 
             if (other == null){
                 chatRoomDto.setOAvatar("-1.png");

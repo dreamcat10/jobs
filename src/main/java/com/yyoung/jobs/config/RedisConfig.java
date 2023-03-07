@@ -16,7 +16,7 @@ public class RedisConfig extends CachingConfigurerSupport {
 
 
     @Bean
-    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory){
+    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory ){
         RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
 
         //默认的Key序列化器为：JdkSerializationRedisSerializer

@@ -39,7 +39,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Page<User> pageUser(HttpServletRequest request, LambdaQueryWrapper<User> lambdaQueryWrapper, Page<User> page) {
-        long phone = (long) request.getSession().getAttribute("emp");
+        Long phone = (Long) request.getSession().getAttribute("emp");
 
         Long empId = employeeService.getOne(phone).getId();
         QueryWrapper<Post> queryWrapper = new QueryWrapper<>();

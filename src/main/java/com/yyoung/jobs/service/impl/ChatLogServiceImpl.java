@@ -37,9 +37,9 @@ public class ChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> impl
     @Override
     public void receive(Long toId) {
         LambdaQueryWrapper<ChatRoom> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ChatRoom::getUser1, toId);
+        queryWrapper.eq(ChatRoom::getUser1Id, toId);
         queryWrapper.or();
-        queryWrapper.eq(ChatRoom::getUser2, toId);
+        queryWrapper.eq(ChatRoom::getUser2Id, toId);
 
         List<ChatRoom> chatRooms = chatRoomService.list(queryWrapper);
         for (ChatRoom chatRoom : chatRooms) {

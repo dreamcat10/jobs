@@ -107,6 +107,16 @@ public class EmployeeController {
         return Result.error("发送失败");
     }
 
+    @PatchMapping("/edit")
+    public Result<Employee> edit(@RequestBody Employee employee){
+
+        employeeService.updateById(employee);
+
+        Employee emp = employeeService.getById(employee.getId());
+
+        return Result.success(emp);
+
+    }
     @RequestMapping("/test")
     public void test(){
 

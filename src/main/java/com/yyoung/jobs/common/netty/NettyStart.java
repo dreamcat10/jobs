@@ -1,7 +1,12 @@
 package com.yyoung.jobs.common.netty;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -19,4 +24,5 @@ public class NettyStart implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
             nettyServer.run();
     }
+
 }

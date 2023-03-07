@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 public class ChatRoom {
 
   private Long id;
-  private Long user1;
-  private Long user2;
+  private Long user1Id;
+  private Long user2Id;
   private Long creatId;
   @TableField(fill = FieldFill.INSERT)
   private LocalDateTime createTime;

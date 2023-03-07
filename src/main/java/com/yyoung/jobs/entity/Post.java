@@ -19,6 +19,7 @@ public class Post {
   private String salary;
   private String content;
   private String welfare;
+  private String address;
   @TableField(fill = FieldFill.INSERT)
   private LocalDateTime createTime;
   @TableField(fill = FieldFill.INSERT_UPDATE)

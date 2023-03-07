@@ -13,47 +13,12 @@ public class News {
 
   private Long id;
   private Long createId;
+  private String createName;
+  private String createAvatar;
+  private String title;
   private Long starts;
   private String content;
   @TableField(fill = FieldFill.INSERT)
   private LocalDateTime createTime;
-
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-
-  public long getCreateId() {
-    return createId;
-  }
-
-  public void setCreateId(long createId) {
-    this.createId = createId;
-  }
-
-
-  public long getStarts() {
-    return starts;
-  }
-
-  public void setStarts(long starts) {
-    this.starts = starts;
-  }
-
-
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
-  }
-
-
 
 }

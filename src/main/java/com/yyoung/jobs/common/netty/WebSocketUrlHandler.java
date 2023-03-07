@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 
 
 @Slf4j
-public class WebSocketUrlHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
+public class WebSocketUrlHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>{
 
 //    @Resource
 //    WebSocketHandler webSocketHandler;
