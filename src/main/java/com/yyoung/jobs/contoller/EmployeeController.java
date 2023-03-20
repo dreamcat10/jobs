@@ -1,5 +1,6 @@
 package com.yyoung.jobs.contoller;
 
+import com.yyoung.jobs.common.Sample;
 import com.yyoung.jobs.dto.EmployeeDto;
 import com.yyoung.jobs.entity.Employee;
 import com.yyoung.jobs.service.EmployeeService;
@@ -34,6 +35,7 @@ public class EmployeeController {
     @RequestMapping("/init")
     public Result<String> init(@RequestBody EmployeeDto employeeDto){
 
+        log.info("emp:{}",employeeDto);
         Integer code = employeeDto.getCode();
         ValueOperations ops = redisTemplate.opsForValue();
         Object sms = ops.get("" + employeeDto.getPhone());
@@ -51,7 +53,11 @@ public class EmployeeController {
         employee.setName(employeeDto.getName());
         employee.setPhone(employeeDto.getPhone());
         employee.setPassword(employeeDto.getPassword());
-
+        if (employeeDto.getSex() == 1){
+            employee.setAvatar("https://cat-jobs.oss-cn-chengdu.aliyuncs.com/jobs/img/1.png");
+        }else {
+            employee.setAvatar("https://cat-jobs.oss-cn-chengdu.aliyuncs.com/jobs/img/0.png");
+        }
         employeeService.addEmp(employee);
 
         return Result.success(null);
@@ -93,8 +99,8 @@ public class EmployeeController {
         String phoneNumbers = String.valueOf(phone);
         Integer code = ValidateCodeUtils.generateValidateCode(4);
         try {
-//            Boolean isSuccess = Sample.sendSms(phoneNumbers, code);
-            Boolean isSuccess = true;
+            Boolean isSuccess = Sample.sendSms(phoneNumbers, code);
+//            Boolean isSuccess = true;
             log.info("成功？:{}",isSuccess);
             if (isSuccess){
                 ValueOperations ops = redisTemplate.opsForValue();
@@ -102,7 +108,7 @@ public class EmployeeController {
                 return Result.success(null);
             }
         } catch (Exception e) {
-            log.debug("发送验证码出错,错误信息: {} ", e.getMessage());
+            log.info("发送验证码出错,错误信息: {} ", e.getMessage());
         }
         return Result.error("发送失败");
     }

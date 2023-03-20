@@ -59,11 +59,11 @@ public class Sample {
 
         } catch (TeaException error) {
             // 如有需要，请打印 error
-            log.debug(error.message);
+            log.info(error.message);
         } catch (Exception _error) {
             TeaException error = new TeaException(_error.getMessage(), _error);
             // 如有需要，请打印 error
-            log.debug(error.message);
+            log.info(error.message);
         }
         return false;
     }

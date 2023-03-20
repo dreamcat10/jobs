@@ -9,10 +9,7 @@ import com.yyoung.jobs.service.UserService;
 import com.yyoung.jobs.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,5 +68,15 @@ public class ProcessController {
         log.info("list:{}",list);
 
         return Result.success(list);
+    }
+
+    @PutMapping("/change")
+    public Result<Process> changeProcess(@RequestBody Process process){
+
+        processService.updateById(process);
+
+        Process updateProcess = processService.getById(process.getId());
+
+        return Result.success(updateProcess);
     }
 }
